@@ -4,6 +4,7 @@ import Footer from "./components/Footer"
 import AddItem from "./pages/AddItem"
 import GroceryList from "./pages/GroceryList"
 import Home from "./pages/Home"
+import Search from './pages/Search'
 function App() {
 
   return (
@@ -13,6 +14,7 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/additem" element={<AddItem />} />
             <Route path="/list" element={<GroceryList />} />
+            <Route path="/search" element={<Search/>}/>
           </Routes>
         </div>
         <Footer />
