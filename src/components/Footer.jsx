@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import "./Footer.css"
-import { AiOutlineUnorderedList, AiFillFileAdd, AiOutlineHome } from "react-icons/ai"
+import { AiOutlineUnorderedList, AiFillFileAdd, AiOutlineHome, AiOutlineSearch } from "react-icons/ai"
 
 const Navbar = () => {
     return (
@@ -18,6 +18,11 @@ const Navbar = () => {
         <div className="icon">
           <Link to="/additem">
             <AiFillFileAdd size={23} />
+          </Link>
+        </div>
+        <div className="icon">
+          <Link to="/additem">
+            <AiOutlineSearch size={23} />
           </Link>
         </div>
       </div>
