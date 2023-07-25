@@ -1,0 +1,30 @@
+body {
+  margin: 0;
+  padding: 0;
+}
+
+.navbar {
+  background-color: #333; /* Dark background color */
+  text-align: center;
+}
+
+.navbar-list {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+.navbar-item {
+  display: inline-block;
+  margin: 0 10px;
+}
+
+.navbar-item a {
+  text-decoration: none;
+  color: #fff; /* Link text color */
+  padding: 10px 20px;
+}
+
+.navbar-item a:hover {
+  background-color: #555; /* Hover background color */
+}
