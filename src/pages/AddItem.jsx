@@ -1,14 +1,18 @@
+import axios from "axios";
 import { useState } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css"
 
 const AddItem = () => {
-  
+  const success = () => toast.success("Item added")
+  const failure = () => toast.error("Failed to add item.")
   const [category, setcategory] = useState("")
-  
+
   const handleCategoryChange = (event) => {
     setcategory(event.target.value)
   }
 
-  const insertitem = (event) => {
+  const insertitem = async (event) => {
     event.preventDefault()
     const formData = new FormData(event.target)
     const name = formData.get("name")
@@ -19,34 +23,29 @@ const AddItem = () => {
     const expiry = formData.get("expiry")
     
     const data = {
-      name,
-      quantity: qty,
-      unit,
-      location,
-      category,
-      expiry,
+      name: name,
+      quantity: parseInt(qty),
+      unit: unit,
+      location: location,
+      category: category,
+      expiry: expiry,
     };
 
-    fetch("http://localhost:8080/insert", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        return response.json();
+    console.log(JSON.stringify(data))
+
+    axios
+      .post("http://localhost:8080/insert", data, {
+        headers: {
+          "Content-Type": "application/json",
+        },
       })
-      .then((data) => {
-        console.log("Data sent successfully:", data);
-        // Handle the response data if needed
+      .then((response) => {
+        console.log("Data sent successfully:", response.data);
+        success()
       })
       .catch((error) => {
         console.error("Error sending data:", error);
-        // Handle errors here
+        failure()
       });
   }
 
@@ -58,7 +57,10 @@ const AddItem = () => {
         </h1>
       </div>
       <div className="flex flex-col justify-center items-center flex-grow w-72 mx-auto">
-        <form className="form-div flex flex-col items-center gap-4" onSubmit={insertitem}>
+        <form
+          className="form-div flex flex-col items-center gap-4"
+          onSubmit={insertitem}
+        >
           <label htmlFor="itemName" className="text-gray-700 font-semibold">
             Item Name
           </label>
@@ -69,6 +71,7 @@ const AddItem = () => {
             placeholder="Enter item name"
             name="name"
             autoComplete="off"
+            required
           />
 
           <label htmlFor="quantity" className="text-gray-700 font-semibold">
@@ -82,10 +85,13 @@ const AddItem = () => {
               placeholder="Qty"
               name="quantity"
               autoComplete="off"
+              required
             />
             <select
               id="unit"
               className="w-1/2 px-4 py-2 rounded-r-md border border-l-0 border-gray-300 focus:outline-none focus:border-blue-500"
+              name="unit"
+              required
             >
               <option value="" disabled selected>
                 Unit
@@ -102,7 +108,7 @@ const AddItem = () => {
           <select
             id="location"
             className="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:border-blue-500"
-            name="unit"
+            name="location"
           >
             <option value="" disabled selected>
               Location
@@ -121,8 +127,8 @@ const AddItem = () => {
             id="category"
             className="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:border-blue-500"
             onChange={handleCategoryChange}
-            value={category}
             name="category"
+            required
           >
             <option value="" disabled selected>
               Category
@@ -138,20 +144,23 @@ const AddItem = () => {
             <option value="other">other</option>
           </select>
 
-          {category === "fruit" || category === "snacks" || category === "pantry_items" ? (
+          {category === "fruit" ||
+          category === "snacks" ||
+          category === "pantry_items" ? (
             <>
-            <label htmlFor="date" className="text-gray-700 font-semibold">
-            Expiration Date
-          </label>
-          <input
-            id="date"
-            name="expiry"
-            type="date"
-            className="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:border-blue-500"
-          />
-          </>
+              <label htmlFor="date" className="text-gray-700 font-semibold">
+                Expiration Date
+              </label>
+              <input
+                id="date"
+                name="expiry"
+                type="date"
+                className="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:border-blue-500"
+                min={new Date().toISOString().split("T")[0]}
+              />
+            </>
           ) : null}
-          
+
           <button
             type="submit"
             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
@@ -160,6 +169,11 @@ const AddItem = () => {
           </button>
         </form>
       </div>
+      <ToastContainer 
+      position="top-center"
+      autoClose={2000}
+      closeOnClick
+      />
     </div>
   );
 };
