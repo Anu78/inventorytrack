@@ -1,4 +1,22 @@
+import { useState, useEffect } from "react";
+import axios from "axios";
+
 const GroceryList = () => {
+  
+  const [items, setItems] = useState([])
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:8080/expiringsoon")
+      .then((response) => {
+        setItems(response.data);
+      })
+      .catch((error) => {
+        // Handle errors
+        console.error("Error fetching items:", error);
+      });
+  }, []);
+
   return (
     <div className="grocery-container">
       <div className="list-heading">
@@ -6,17 +24,9 @@ const GroceryList = () => {
       </div>
 
       <div className="list">
-        <ul className="list-none space-y-2 text-gray-800">
-          <li className="bg-gray-100 p-4 rounded-md shadow-sm hover:shadow-md transition-shadow">
-            Item 1
-          </li>
-          <li className="bg-gray-100 p-4 rounded-md shadow-sm hover:shadow-md transition-shadow">
-            Item 2
-          </li>
-          <li className="bg-gray-100 p-4 rounded-md shadow-sm hover:shadow-md transition-shadow">
-            Item 3
-          </li>
-        </ul>
+        {items.map((item) => (
+          <li key={item._id}>{item.name}</li>
+        ))}
       </div>
     </div>
   );

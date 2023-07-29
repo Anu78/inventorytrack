@@ -4,7 +4,7 @@ const Search = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [timeoutId, setTimeoutId] = useState(null)
-
+  
   const processSearch = (query) => {
     // Simulate an API call or search function with a delay
     // Replace this with your actual search implementation

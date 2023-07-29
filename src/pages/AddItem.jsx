@@ -20,7 +20,11 @@ const AddItem = () => {
     const unit = formData.get("unit")
     const location = formData.get("location")
     const category = formData.get("category")
-    const expiry = formData.get("expiry")
+    let expiry = formData.get("expiry")
+    
+    if (expiry !== null) {
+      expiry = new Date(expiry)
+    }
     
     const data = {
       name: name,
@@ -32,7 +36,6 @@ const AddItem = () => {
     };
 
     console.log(JSON.stringify(data))
-
     axios
       .post("http://localhost:8080/insert", data, {
         headers: {
@@ -42,11 +45,14 @@ const AddItem = () => {
       .then((response) => {
         console.log("Data sent successfully:", response.data);
         success()
+        event.target.reset()
       })
       .catch((error) => {
         console.error("Error sending data:", error);
         failure()
       });
+
+
   }
 
   return (
@@ -109,6 +115,7 @@ const AddItem = () => {
             id="location"
             className="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:border-blue-500"
             name="location"
+            required
           >
             <option value="" disabled selected>
               Location
