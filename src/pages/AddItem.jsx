@@ -37,7 +37,7 @@ const AddItem = () => {
 
     console.log(JSON.stringify(data))
     axios
-      .post("http://localhost:8080/insert", data, {
+      .post("http://localhost:8888/insert", data, {
         headers: {
           "Content-Type": "application/json",
         },

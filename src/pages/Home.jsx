@@ -6,7 +6,7 @@ const Home = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:8080/expiringsoon")
+      .get("http://localhost:8888/expiringsoon")
       .then((response) => {
         setItems(response.data);
       })

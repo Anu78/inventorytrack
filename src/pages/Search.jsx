@@ -5,7 +5,7 @@ import { debounce } from "lodash";
 const processSearch = async (searchFilters, setSearchResults) => {
   try {
     const response = await fetch(
-      `http://localhost:8080/search?query=${searchFilters.query}`
+      `http://localhost:8888/search?query=${searchFilters.query}`
     );
     const data = await response.json();
     console.log(data);
