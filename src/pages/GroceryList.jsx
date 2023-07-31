@@ -7,7 +7,7 @@ const GroceryList = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:8888/expiringsoon")
+      .get("http://172.16.1.146:8888/expiringsoon")
       .then((response) => {
         setItems(response.data);
       })
