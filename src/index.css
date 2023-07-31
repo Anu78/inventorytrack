@@ -12,9 +12,11 @@ body {
   margin: 0;
   padding: 0;
   background-color: var(--background-color);
+  overflow: none;
 }
 
 #root {
   margin: 0;
   padding: 0;
+  overflow: none;
 }

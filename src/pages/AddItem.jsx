@@ -46,6 +46,7 @@ const AddItem = () => {
         console.log("Data sent successfully:", response.data);
         success()
         event.target.reset()
+        setcategory("nuts")
       })
       .catch((error) => {
         console.error("Error sending data:", error);
@@ -149,10 +150,12 @@ const AddItem = () => {
             <option value="oils">oils</option>
             <option value="pantry_items">pantry items</option>
             <option value="other">other</option>
+            <optiom value="fridge">fridge</optiom>
           </select>
 
           {category === "fruit" ||
           category === "snacks" ||
+          category === "condiments" ||
           category === "pantry_items" ? (
             <>
               <label htmlFor="date" className="text-gray-700 font-semibold">
