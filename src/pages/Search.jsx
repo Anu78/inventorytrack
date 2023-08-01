@@ -29,26 +29,45 @@ const handleDelete = async (itemId, setSearchResults) => {
   }
 };
 
-// const handleEdit = async (itemId, newQtyStr, setSearchResults) => {
-//   if (newQtyStr === "") return
-//   let newQty = parseInt(newQtyStr)
+const handleEdit = async (itemId, newQtyStr, setSearchResults, setNewQty) => {
+  if (newQtyStr === "") return;
+  let newQty = parseInt(newQtyStr);
 
-//   try {
-    
-//     await axios.patch(``);
+  try {
+    const response = await axios.patch(
+      `http://172.16.2.194:8888/updateitem/${itemId}`,
+      { quantity: newQty },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    if (!response) return
 
-    
+    setSearchResults((prevSearchResults) => {
+      return prevSearchResults.map((item) => {
+        if (item.id === itemId) {
+          return {
+            ...item,
+            quantity: newQty,
+          };
+        }
+        return item;
+      });
+    });
+    setNewQty(0)
+  } catch (error) {
+    console.error("Error updating item:", error);
+    // Handle errors if needed
+  }
+};
 
-//   } catch (error) {
-//     console.error("Error deleting item:", error);
-//   }
-// };
 const Search = () => {
   const [newQty, setNewQty] = useState(0)
   
   const handleQtyChange = (event) => {
     setNewQty(event.target.value)
-    console.log(event.target.value)
   }
   
   const formattedExpiry = (expiry) => {
@@ -118,9 +137,10 @@ const Search = () => {
                   type="number"
                   className="qty-input"
                   size="2"
+                  value={newQty === 0 ? "" : newQty}
                   onChange={handleQtyChange}
                 ></input>
-                <button type="submit" className="edit-btn" onClick={() => handleEdit(item.id, newQty, setSearchResults)}>
+                <button type="button" className="edit-btn" onClick={() => handleEdit(item.id, newQty, setSearchResults, setNewQty)}>
                   <span>
                     <AiFillEdit size={17} />
                   </span>
