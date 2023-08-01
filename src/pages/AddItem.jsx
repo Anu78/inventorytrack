@@ -37,7 +37,7 @@ const AddItem = () => {
 
     console.log(JSON.stringify(data))
     axios
-      .post("http://172.16.1.146:8888/insert", data, {
+      .post("http://172.16.2.194:8888/insert", data, {
         headers: {
           "Content-Type": "application/json",
         },
