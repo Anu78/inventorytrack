@@ -6,7 +6,7 @@ const Home = () => {
 
   useEffect(() => {
     axios
-      .get("http://172.16.2.192:8888/expiringsoon")
+      .get("http://172.16.3.76:8888/expiringsoon")
       .then((response) => {
         setItems(response.data);
       })

@@ -7,7 +7,7 @@ import axios from "axios";
 const processSearch = async (query, category, location, setSearchResults) => {
   try {
     const response = await fetch(
-      `http://172.6.3.76:8888/search?query=${query}&location=${location}&category=${category}`
+      `http://172.16.3.76:8888/search?query=${query}&location=${location}&category=${category}`
     );
     const data = await response.json();
     setSearchResults(data);
