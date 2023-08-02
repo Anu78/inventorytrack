@@ -4,13 +4,13 @@ import { debounce } from "lodash";
 import { AiFillDelete, AiFillEdit } from "react-icons/ai";
 import axios from "axios";
 
-const processSearch = async (searchFilters, setSearchResults) => {
+const processSearch = async (query, category, location, setSearchResults) => {
   try {
     const response = await fetch(
-      `http://172.16.2.194:8888/search?query=${searchFilters.query}&location=${searchFilters.location}&category=${searchFilters.category}`
+      `http://172.6.3.76:8888/search?query=${query}&location=${location}&category=${category}`
     );
     const data = await response.json();
-    if (data) setSearchResults(data);
+    setSearchResults(data);
   } catch (error) {
     console.error("Error fetching data:", error);
   }
@@ -18,8 +18,7 @@ const processSearch = async (searchFilters, setSearchResults) => {
 
 const handleDelete = async (itemId, setSearchResults) => {
   try {
-
-    await axios.delete(`http://172.16.2.194:8888/delete/${itemId}`);
+    await axios.delete(`http://172.16.3.76:8888/delete/${itemId}`);
 
     setSearchResults((prevResults) =>
       prevResults.filter((item) => item.id !== itemId)
@@ -35,7 +34,7 @@ const handleEdit = async (itemId, newQtyStr, setSearchResults, setNewQty) => {
 
   try {
     const response = await axios.patch(
-      `http://172.16.2.194:8888/updateitem/${itemId}`,
+      `http://172.16.3.76:8888/updateitem/${itemId}`,
       { quantity: newQty },
       {
         headers: {
@@ -43,7 +42,7 @@ const handleEdit = async (itemId, newQtyStr, setSearchResults, setNewQty) => {
         },
       }
     );
-    if (!response) return
+    if (!response) return;
 
     setSearchResults((prevSearchResults) => {
       return prevSearchResults.map((item) => {
@@ -56,7 +55,7 @@ const handleEdit = async (itemId, newQtyStr, setSearchResults, setNewQty) => {
         return item;
       });
     });
-    setNewQty(0)
+    setNewQty(0);
   } catch (error) {
     console.error("Error updating item:", error);
     // Handle errors if needed
@@ -64,12 +63,24 @@ const handleEdit = async (itemId, newQtyStr, setSearchResults, setNewQty) => {
 };
 
 const Search = () => {
-  const [newQty, setNewQty] = useState(0)
-  
+  const [newQty, setNewQty] = useState(0);
+
   const handleQtyChange = (event) => {
-    setNewQty(event.target.value)
-  }
-  
+    setNewQty(event.target.value);
+  };
+
+  const handleCategoryChange = (event) => {
+    const value = event.target.value;
+
+    setCategory(value);
+  };
+
+  const handleLocationChange = (event) => {
+    const value = event.target.value;
+
+    setLocation(value);
+  };
+
   const formattedExpiry = (expiry) => {
     const isDefaultTime = expiry === "0001-01-01T00:00:00Z";
 
@@ -82,89 +93,128 @@ const Search = () => {
 
     return `${month}/${day}/${year}`;
   };
-
-  const [searchFilters, setSearchFilters] = useState({
-    query: "",
-    location: "",
-    category: "",
-    recent: true,
-  });
   const [searchResults, setSearchResults] = useState([]);
+  const [category, setCategory] = useState("all");
+  const [location, setLocation] = useState("all");
+  const [query, setQuery] = useState("");
 
   const handleSearchInputChange = debounce((event) => {
     const value = event.target.value;
-
-    setSearchFilters((prevFilters) => ({
-      ...prevFilters,
-      query: value,
-    }));
+    setQuery(value);
   }, 800);
 
   useEffect(() => {
-    processSearch(searchFilters, setSearchResults);
-  }, [searchFilters]);
+    processSearch(query, category, location, setSearchResults);
+  }, [query, category, location]);
 
   return (
     <div className="search-container">
       <div className="search-results">
-        {searchResults.map((item) => (
-          <div key={item.id} className="card">
-            <div className="item-name">
-              <p className="card-min-location">{item.location}</p>
-              <h1 className="card-heading">{item.name}</h1>
-              <p className="card-min-location">
-                {"exp. "}
-                {formattedExpiry(item.expiry)}
-              </p>
-            </div>
-            <div className="edit-qty">
-              <div className="qty-text">
-                <p className="card-min-unit">
-                  {item.quantity +
-                    (item.unit === "pounds"
-                      ? " lbs"
-                      : item.unit === "numItems"
-                      ? " item(s)"
-                      : item.unit === "percentage"
-                      ? "%"
-                      : "")}{" "}
-                  {" " + "rem."}
+        {searchResults === null ? (
+          <div className="no-items-found">
+            <h1>No items found. please adjust your filters.</h1>
+          </div>
+        ) : (
+          searchResults.map((item) => (
+            <div key={item.id} className="card">
+              <div className="item-name">
+                <p className="card-min-location">{item.location}</p>
+                <h1 className="card-heading">{item.name}</h1>
+                <p className="card-min-location">
+                  {"exp. "}
+                  {formattedExpiry(item.expiry)}
                 </p>
               </div>
-              <form className="qty-form">
-                <input
-                  placeholder="qty"
-                  type="number"
-                  className="qty-input"
-                  size="2"
-                  value={newQty === 0 ? "" : newQty}
-                  onChange={handleQtyChange}
-                ></input>
-                <button type="button" className="edit-btn" onClick={() => handleEdit(item.id, newQty, setSearchResults, setNewQty)}>
+              <div className="edit-qty">
+                <div className="qty-text">
+                  <p className="card-min-unit">
+                    {item.quantity +
+                      (item.unit === "pounds"
+                        ? " lbs"
+                        : item.unit === "numItems"
+                        ? " item(s)"
+                        : item.unit === "percentage"
+                        ? "%"
+                        : "")}{" "}
+                    {" " + "rem."}
+                  </p>
+                </div>
+                <form className="qty-form">
+                  <input
+                    placeholder="qty"
+                    type="number"
+                    className="qty-input"
+                    size="2"
+                    value={newQty === 0 ? "" : newQty}
+                    onChange={handleQtyChange}
+                  ></input>
+                  <button
+                    type="button"
+                    className="edit-btn"
+                    onClick={() =>
+                      handleEdit(item.id, newQty, setSearchResults, setNewQty)
+                    }
+                  >
+                    <span>
+                      <AiFillEdit size={17} />
+                    </span>
+                  </button>
+                </form>
+                <div className="card-expiring"></div>
+              </div>
+              <div className="delete">
+                <button
+                  type="submit"
+                  id="delete"
+                  className="delete-btn"
+                  onClick={() => handleDelete(item.id, setSearchResults)}
+                >
                   <span>
-                    <AiFillEdit size={17} />
+                    <AiFillDelete size={18} />
                   </span>
                 </button>
-              </form>
-              <div className="card-expiring"></div>
+              </div>
             </div>
-            <div className="delete">
-              <button
-                type="submit"
-                id="delete"
-                className="delete-btn"
-                onClick={() => handleDelete(item.id, setSearchResults)}
-              >
-                <span>
-                  <AiFillDelete size={18} />
-                </span>
-              </button>
-            </div>
-          </div>
-        ))}
+          ))
+        )}
 
         <div className="search-div">
           <form className="search-form">
+            <div className="filter-opt">
+              <select
+                name="category"
+                className="dropdown"
+                value={category}
+                onChange={handleCategoryChange}
+                defaultValue="all"
+              >
+                <option value="all">all categories</option>
+                <option value="nuts">nuts</option>
+                <option value="dals">dals</option>
+                <option value="condiments">condiments</option>
+                <option value="spices">spices</option>
+                <option value="fruit">fruit</option>
+                <option value="snacks">snacks</option>
+                <option value="oils">oils</option>
+                <option value="pantry_items">pantry items</option>
+                <option value="other">other</option>
+                <option value="fridge">fridge</option>
+              </select>
+              <select
+                name="location"
+                className="dropdown"
+                value={location}
+                onChange={handleLocationChange}
+                defaultValue="all"
+              >
+                <option value="all">all places</option>
+                <option value="kitchen">kitchen</option>
+                <option value="fridge">fridge</option>
+                <option value="guest_room">guest room</option>
+                <option value="pantry">pantry</option>
+                <option value="closet">closet</option>
+              </select>
+            </div>
             <label
               htmlFor="default-search"
               className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
@@ -186,6 +236,7 @@ const Search = () => {
                   />
                 </svg>
               </div>
+
               <input
                 type="search"
                 id="default-search"

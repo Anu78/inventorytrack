@@ -150,7 +150,7 @@ const AddItem = () => {
             <option value="oils">oils</option>
             <option value="pantry_items">pantry items</option>
             <option value="other">other</option>
-            <optiom value="fridge">fridge</optiom>
+            <option value="fridge">fridge</option>
           </select>
 
           {category === "fruit" ||
