@@ -7,7 +7,7 @@ import axios from "axios";
 const processSearch = async (query, category, location, setSearchResults) => {
   try {
     const response = await fetch(
-      `http://172.16.3.76:8888/search?query=${query}&location=${location}&category=${category}`
+      `http://localhost:8888/search?query=${query}&location=${location}&category=${category}`
     );
     const data = await response.json();
     setSearchResults(data);
@@ -18,7 +18,7 @@ const processSearch = async (query, category, location, setSearchResults) => {
 
 const handleDelete = async (itemId, setSearchResults) => {
   try {
-    await axios.delete(`http://172.16.3.76:8888/delete/${itemId}`);
+    await axios.delete(`http://localhost:8888/delete/${itemId}`);
 
     setSearchResults((prevResults) =>
       prevResults.filter((item) => item.id !== itemId)
@@ -28,14 +28,31 @@ const handleDelete = async (itemId, setSearchResults) => {
   }
 };
 
-const handleEdit = async (itemId, newQtyStr, setSearchResults, setNewQty) => {
+const handleEdit = async (
+  itemId,
+  setSearchResults,
+  setNewQty,
+  newlocation = null,
+  newQtyStr = null
+) => {
   if (newQtyStr === "") return;
-  let newQty = parseInt(newQtyStr);
+  let newQty = parseFloat(newQtyStr);
+
+  let updateObject = {};
+
+  if (newlocation !== null) {
+    updateObject["location"] = newlocation;
+  }
+
+  if (newQtyStr !== null) {
+    updateObject["quantity"] = newQty;
+  }
 
   try {
     const response = await axios.patch(
-      `http://172.16.3.76:8888/updateitem/${itemId}`,
-      { quantity: newQty },
+      `http://localhost:8888/updateitem/${itemId}`,
+      updateObject,
+
       {
         headers: {
           "Content-Type": "application/json",
@@ -64,9 +81,17 @@ const handleEdit = async (itemId, newQtyStr, setSearchResults, setNewQty) => {
 
 const Search = () => {
   const [newQty, setNewQty] = useState(0);
+  const [searchResults, setSearchResults] = useState([]);
+  const [category, setCategory] = useState("all");
+  const [location, setLocation] = useState("all");
+  const [query, setQuery] = useState("");
 
   const handleQtyChange = (event) => {
     setNewQty(event.target.value);
+  };
+
+  const handleLocationSwitch = (itemId, event) => {
+    handleEdit(itemId, setSearchResults, setNewQty, event.target.value);
   };
 
   const handleCategoryChange = (event) => {
@@ -93,10 +118,6 @@ const Search = () => {
 
     return `${month}/${day}/${year}`;
   };
-  const [searchResults, setSearchResults] = useState([]);
-  const [category, setCategory] = useState("all");
-  const [location, setLocation] = useState("all");
-  const [query, setQuery] = useState("");
 
   const handleSearchInputChange = debounce((event) => {
     const value = event.target.value;
@@ -118,7 +139,20 @@ const Search = () => {
           searchResults.map((item) => (
             <div key={item.id} className="card">
               <div className="item-name">
-                <p className="card-min-location">{item.location}</p>
+                <p className="card-min-location">
+                  <select
+                    name="location-select"
+                    id="choose-location"
+                    defaultValue={item.location}
+                    onChange={(event) => handleLocationSwitch(item.id, event)}
+                  >
+                    <option value="kitchen">kitchen</option>
+                    <option value="fridge">fridge</option>
+                    <option value="guest_room">guest room</option>
+                    <option value="pantry">pantry</option>
+                    <option value="closet">closet</option>
+                  </select>
+                </p>
                 <h1 className="card-heading">{item.name}</h1>
                 <p className="card-min-location">
                   {"exp. "}
@@ -145,7 +179,6 @@ const Search = () => {
                     type="number"
                     className="qty-input"
                     size="2"
-                    value={newQty === 0 ? "" : newQty}
                     onChange={handleQtyChange}
                   ></input>
                   <button
@@ -184,7 +217,6 @@ const Search = () => {
               <select
                 name="category"
                 className="dropdown"
-                value={category}
                 onChange={handleCategoryChange}
                 defaultValue="all"
               >
@@ -203,7 +235,6 @@ const Search = () => {
               <select
                 name="location"
                 className="dropdown"
-                value={location}
                 onChange={handleLocationChange}
                 defaultValue="all"
               >
