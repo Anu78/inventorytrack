@@ -11,3 +11,11 @@
   width: 100%;
   height: 5vh;
 }
+
+
+@media (prefers-color-scheme: dark) {
+  .footer {
+    background-color: #342E37;
+    color: #fff;
+  }
+}

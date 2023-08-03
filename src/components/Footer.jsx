@@ -1,10 +1,14 @@
 import { Link, useLocation } from "react-router-dom";
-import "./Footer.css"
-import { AiOutlineUnorderedList, AiFillFileAdd, AiOutlineHome, AiOutlineSearch } from "react-icons/ai"
+import "./Footer.css";
+import {
+  AiOutlineUnorderedList,
+  AiFillFileAdd,
+  AiOutlineHome,
+  AiOutlineSearch,
+} from "react-icons/ai";
 
 const Navbar = () => {
-    
-  const location = useLocation()
+  const location = useLocation();
 
   return (
     <div className="footer">
@@ -42,6 +46,6 @@ const Navbar = () => {
       </div>
     </div>
   );
-}
- 
+};
+
 export default Navbar;
