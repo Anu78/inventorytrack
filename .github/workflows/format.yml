@@ -27,12 +27,26 @@ jobs:
       - name: Get Latest Tag
         id: get_latest_tag
         run: |
-          LATEST_TAG=$(git describe --tags $(git rev-list --tags --max-count=1))
+          LATEST_TAG=$(git describe --tags $(git rev-list --tags --max-count=1) 2>/dev/null || true)
           if [[ -z "$LATEST_TAG" ]]; then
             LATEST_TAG="v0.0.0"
           fi
-          echo $LATEST_TAG
-          echo ::set-output name=new_tag::$LATEST_TAG
+          echo "Latest tag is $LATEST_TAG"
+          echo ::set-output name=latest_tag::$LATEST_TAG
+        shell: bash
+
+      - name: Bump version and Push tag
+        id: bump_version
+        run: |
+          VERSION=$(echo ${{ steps.get_latest_tag.outputs.latest_tag }} | sed -e "s/^v//" -e "s/\([^0-9]\)/.\1/g")
+          VERSION=$(echo $VERSION | awk -F. '{ printf("%d.%d.%d", $1, $2, $3 + 1)}')
+          NEW_TAG="v$VERSION"
+          echo "Bumping to new tag $NEW_TAG"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "GitHub Actions"
+          git tag $NEW_TAG
+          git push origin $NEW_TAG
+          echo ::set-output name=new_tag::$NEW_TAG
         shell: bash
 
       - name: Create Release
@@ -41,8 +55,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.event.inputs.release_version || steps.get_latest_tag.outputs.new_tag }}
-          release_name: Release ${{ github.event.inputs.release_version || steps.get_latest_tag.outputs.new_tag }}
-          body: Auto-generated release for ${{ github.event.inputs.release_version || steps.get_latest_tag.outputs.new_tag }}
+          tag_name: ${{ steps.bump_version.outputs.new_tag }}
+          release_name: Release ${{ steps.bump_version.outputs.new_tag }}
+          body: Auto-generated release for ${{ steps.bump_version.outputs.new_tag }}
           draft: false
           prerelease: false
