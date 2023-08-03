@@ -21,10 +21,8 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Run Prettier
-        run: npm run format
-
       - name: Get Latest Tag
+        id: get_latest_tag
         uses: actions/github-script@v5
         with:
           script: |
@@ -33,7 +31,7 @@ jobs:
               per_page: 1,
               order: 'desc'
             });
-            const latestTag = response.data[0]?.name || 'v0.0.0';
+            const latestTag = response.data[0]?.name || '0.0.0';
             const version = latestTag.replace(/^v/, '').split('.').map(Number);
             version[2]++;
             const newTag = `v${version.join('.')}`;
