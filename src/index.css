@@ -20,3 +20,9 @@ body {
   padding: 0;
   overflow: none;
 }
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: rgb(62, 59, 59); /* Dark mode background color */
+  }
+}
