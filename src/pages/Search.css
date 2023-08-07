@@ -11,8 +11,14 @@
     display: flex;
     align-items: center;
     flex-direction: column;
-    overflow: scroll;
     border-radius: 3%;
+    overflow-y: scroll;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.search-results::-webkit-scrollbar {
+    display: none;
 }
 
 .search-div {
@@ -37,7 +43,7 @@
 
 .card-full {
     width: 100%;
-    min-height: 10vh;
+    min-height: 13vh;
     max-height: 30vh;
     margin-top: 1%;
     margin-bottom: 1%;
@@ -45,7 +51,7 @@
     border-radius: 10px;
     display: flex;
     gap: 2%;
-        opacity: 0;
+    opacity: 0;
     animation: fadeIn 0.5s ease-in-out;
     animation-fill-mode:  forwards;
 }
@@ -168,3 +174,28 @@ input[type="number"]::-ms-outer-spin-button {
   margin: 0;
 }
 
+@media (min-width: 1024px) {
+
+    .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+    }
+    .search-container {
+        flex-basis: 70%;
+        height: 90vh;
+        width: 62vw;
+        padding: 1%;
+    }
+
+    .search-div {
+        flex-basis: 30%;
+        width: 60vw;
+    }
+
+    .card {
+        width: 100%;
+    }
+}

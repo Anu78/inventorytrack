@@ -7,7 +7,7 @@ import axios from "axios";
 const processSearch = async (query, category, location, setSearchResults) => {
   try {
     const response = await fetch(
-      `http://172.16.3.76:8888/search?query=${query}&location=${location}&category=${category}`,
+      `http://localhost:8888/search?query=${query}&location=${location}&category=${category}`,
     );
     const data = await response.json();
     setSearchResults(data);
@@ -18,7 +18,7 @@ const processSearch = async (query, category, location, setSearchResults) => {
 
 const handleDelete = async (itemId, setSearchResults) => {
   try {
-    await axios.delete(`http://172.16.3.76:8888/delete/${itemId}`);
+    await axios.delete(`http://localhost:8888/delete/${itemId}`);
 
     setSearchResults((prevResults) =>
       prevResults.filter((item) => item.id !== itemId),
@@ -50,7 +50,7 @@ const handleEdit = async (
 
   try {
     const response = await axios.patch(
-      `http://172.16.3.76:8888/updateitem/${itemId}`,
+      `http://localhost:8888/updateitem/${itemId}`,
       updateObject,
 
       {
@@ -227,80 +227,79 @@ const Search = () => {
             </div>
           ))
         )}
-
-        <div className="search-div">
-          <form
-            className="search-form"
-            onSubmit={(event) => {
-              event.preventDefault();
-            }}
-          >
-            <div className="filter-opt">
-              <select
-                name="category"
-                className="dropdown bg-white dark:bg-gray-700 text-black dark:text-white border border-gray-300 dark:border-gray-700  shadow-sm rounded-md text-center"
-                onChange={handleCategoryChange}
-                defaultValue="all"
-              >
-                <option value="all">all categories</option>
-                <option value="nuts">nuts</option>
-                <option value="dals">dals</option>
-                <option value="condiments">condiments</option>
-                <option value="spices">spices</option>
-                <option value="fruit">fruit</option>
-                <option value="snacks">snacks</option>
-                <option value="oils">oils</option>
-                <option value="pantry_items">pantry items</option>
-                <option value="other">other</option>
-                <option value="fridge">fridge</option>
-              </select>
-              <select
-                name="location"
-                className="dropdown bg-white dark:bg-gray-700 text-black dark:text-white border border-gray-300 dark:border-gray-700  shadow-sm rounded-md text-center"
-                onChange={handleLocationChange}
-                defaultValue="all"
-              >
-                <option value="all">all places</option>
-                <option value="kitchen">kitchen</option>
-                <option value="fridge">fridge</option>
-                <option value="guest_room">guest room</option>
-                <option value="pantry">pantry</option>
-                <option value="closet">closet</option>
-              </select>
-            </div>
-            <label
-              htmlFor="default-search"
-              className="mb-2 text-sm font-medium text-black sr-only dark:text-white"
+      </div>
+      <div className="search-div">
+        <form
+          className="search-form"
+          onSubmit={(event) => {
+            event.preventDefault();
+          }}
+        >
+          <div className="filter-opt">
+            <select
+              name="category"
+              className="dropdown bg-white dark:bg-gray-700 text-black dark:text-white border border-gray-300 dark:border-gray-700  shadow-sm rounded-md text-center"
+              onChange={handleCategoryChange}
+              defaultValue="all"
             >
-              Search
-            </label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                <svg
-                  className="w-4 h-4 text-gray-500 dark:text-gray-400"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    stroke="currentColor"
-                    d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
-                  />
-                </svg>
-              </div>
-
-              <input
-                type="search"
-                id="default-search"
-                className="block w-full p-4 pl-10 text-sm text-black border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                placeholder="Search items, categories, ..."
-                onChange={handleSearchInputChange}
-                required
-              />
+              <option value="all">all categories</option>
+              <option value="nuts">nuts</option>
+              <option value="dals">dals</option>
+              <option value="condiments">condiments</option>
+              <option value="spices">spices</option>
+              <option value="fruit">fruit</option>
+              <option value="snacks">snacks</option>
+              <option value="oils">oils</option>
+              <option value="pantry_items">pantry items</option>
+              <option value="other">other</option>
+              <option value="fridge">fridge</option>
+            </select>
+            <select
+              name="location"
+              className="dropdown bg-white dark:bg-gray-700 text-black dark:text-white border border-gray-300 dark:border-gray-700  shadow-sm rounded-md text-center"
+              onChange={handleLocationChange}
+              defaultValue="all"
+            >
+              <option value="all">all places</option>
+              <option value="kitchen">kitchen</option>
+              <option value="fridge">fridge</option>
+              <option value="guest_room">guest room</option>
+              <option value="pantry">pantry</option>
+              <option value="closet">closet</option>
+            </select>
+          </div>
+          <label
+            htmlFor="default-search"
+            className="mb-2 text-sm font-medium text-black sr-only dark:text-white"
+          >
+            Search
+          </label>
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+              <svg
+                className="w-4 h-4 text-gray-500 dark:text-gray-400"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  stroke="currentColor"
+                  d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
+                />
+              </svg>
             </div>
-          </form>
-        </div>
+
+            <input
+              type="search"
+              id="default-search"
+              className="block w-full p-4 pl-10 text-sm text-black border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              placeholder="Search items, categories, ..."
+              onChange={handleSearchInputChange}
+              required
+            />
+          </div>
+        </form>
       </div>
     </div>
   );
