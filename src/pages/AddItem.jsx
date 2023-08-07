@@ -3,6 +3,10 @@ import { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+const apiEndpoint = import.meta.env.DEV
+  ? import.meta.env.VITE_API_ENDPOINT_LOCAL
+  : import.meta.env.VITE_API_ENDPOINT_PROD;
+
 const AddItem = () => {
   const success = () => toast.success("Item added");
   const failure = () => toast.error("Failed to add item.");
@@ -37,7 +41,7 @@ const AddItem = () => {
 
     console.log(JSON.stringify(data));
     axios
-      .post("http://172.16.3.76:8888/insert", data, {
+      .post(apiEndpoint + "/insert", data, {
         headers: {
           "Content-Type": "application/json",
         },

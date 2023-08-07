@@ -4,10 +4,14 @@ import { debounce } from "lodash";
 import { AiFillDelete, AiFillEdit } from "react-icons/ai";
 import axios from "axios";
 
+const apiEndpoint = import.meta.env.DEV
+  ? import.meta.env.VITE_API_ENDPOINT_LOCAL
+  : import.meta.env.VITE_API_ENDPOINT_PROD;
+
 const processSearch = async (query, category, location, setSearchResults) => {
   try {
     const response = await fetch(
-      `http://172.16.3.76:8888/search?query=${query}&location=${location}&category=${category}`,
+      apiEndpoint + `/search?query=${query}&location=${location}&category=${category}`,
     );
     const data = await response.json();
     setSearchResults(data);
@@ -18,7 +22,7 @@ const processSearch = async (query, category, location, setSearchResults) => {
 
 const handleDelete = async (itemId, setSearchResults) => {
   try {
-    await axios.delete(`http://172.16.3.76:8888/delete/${itemId}`);
+    await axios.delete(apiEndpoint + `/delete/${itemId}`);
 
     setSearchResults((prevResults) =>
       prevResults.filter((item) => item.id !== itemId),
@@ -50,7 +54,7 @@ const handleEdit = async (
 
   try {
     const response = await axios.patch(
-      `http://172.16.3.76:8888/updateitem/${itemId}`,
+      apiEndpoint + `/updateitem/${itemId}`,
       updateObject,
 
       {
