@@ -1,8 +1,6 @@
-# React + Vite
+# Kitchen Inventory
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
-
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## to-do 
+- add home page and grocery list page
+- Grocery list: add your own items and show things that are running out and expiring items
+- Home: add/remove categories that show up in dropdown menu 

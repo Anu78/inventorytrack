@@ -202,7 +202,13 @@ const Search = () => {
                       type="button"
                       className="edit-btn  text-white dark:text-gray-900"
                       onClick={() =>
-                        handleEdit(item.id, setSearchResults, setNewQty, null, newQty)
+                        handleEdit(
+                          item.id,
+                          setSearchResults,
+                          setNewQty,
+                          null,
+                          newQty,
+                        )
                       }
                     >
                       <span>
